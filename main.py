@@ -40,16 +40,16 @@ def hazard_reader(pdf_file):
         '60-minute Precipitation Intensity': 0  # 1 hour rain value
     }
     
-    # Open the PDF report and extract design values
-    for i in range(0, len(reader.pages)):
-        page = reader.pages[i]
-        lines = page.extract_text().split('\n')
-        for line in lines:
-            for search_string in pdf_values.keys():
-                if search_string in line:
-                    edits = line.replace(search_string, "")
-                    found_val = float(re.findall(r'\d+\.?\d*', edits)[0])
-                    pdf_values[search_string] = found_val
+    # # Open the PDF report and extract design values
+    # for i in range(0, len(reader.pages)):
+    #     page = reader.pages[i]
+    #     lines = page.extract_text().split('\n')
+    #     for line in lines:
+    #         for search_string in pdf_values.keys():
+    #             if search_string in line:
+    #                 edits = line.replace(search_string, "")
+    #                 found_val = float(re.findall(r'\d+\.?\d*', edits)[0])
+    #                 pdf_values[search_string] = found_val
 
     return pdf_values
 
