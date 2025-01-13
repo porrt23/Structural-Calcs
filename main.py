@@ -14,7 +14,7 @@ from handcalcs.decorator import handcalc
 from PyPDF2 import PdfReader
 import re
 
-@handcalc()
+@handcalc(jupyter_display=True)
 def hazard_reader(pdf_file):
     # Open the PDF report and extract the text
     reader = PdfReader(pdf_file)
@@ -62,5 +62,5 @@ uploaded_file = st.file_uploader("Choose ASCE Hazard Report", type=accepted_ftyp
 if uploaded_file is not None:
     file_name = uploaded_file.name
     st.write("Uploaded File Name:", file_name)
-    results,results_latex = hazard_reader(uploaded_file)
+    results = hazard_reader(uploaded_file)
     results
