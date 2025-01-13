@@ -62,5 +62,5 @@ uploaded_file = st.file_uploader("Choose ASCE Hazard Report", type=accepted_ftyp
 if uploaded_file is not None:
     file_name = uploaded_file.name
     st.write("Uploaded File Name:", file_name)
-    results = hazard_reader(uploaded_file)
+    results,results_latex = hazard_reader(uploaded_file)
     results
