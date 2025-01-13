@@ -51,7 +51,7 @@ def hazard_reader(pdf_file):
     #                 found_val = float(re.findall(r'\d+\.?\d*', edits)[0])
     #                 pdf_values[search_string] = found_val
 
-    return pdf_values
+    return 5
 
 #%% File uploader, that accepts only pdf files to get the ASCE Hazard report.
 accepted_ftype = ['pdf']
