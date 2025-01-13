@@ -10,6 +10,10 @@ from matplotlib.patches import Rectangle
 #from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from statistics import mean
 
+from PyPDF2 import PdfReader
+import re
+
+
 #%% Test Plot
 def test_plot(x, s_title):
     st.title(f"Matplotlib Plot #{x}")
@@ -190,126 +194,49 @@ def plot_horizontals(h_data, h_fig,  f_size=12):
                 h_fig.annotate('',xy=(mean([x1,x2]), y1), xytext=(mean([x1,x2]), y2), arrowprops=dict(color=line[0].get_color(),arrowstyle='|-|'))
                 h_fig.annotate(line[0].get_label().replace('@','\n@'), xy=(mean([x1,x2]), y), fontsize = f_size, ha='center', va='center', bbox=dict(facecolor='white', edgecolor=line[0].get_color()))
 
-#%% File uploader, that accepts only tup files. Other files can be uploaded but only the tup files will be accepted.
-accepted_ftype = ['tup']
-folder_title = st.title("Upload RAM files:")
+#%% File uploader, that accepts only pdf files to get the ASCE Hazard report.
+accepted_ftype = ['pdf']
+folder_title = st.title("Upload ASCE Hazard Report:")
 
-placeholder = st.empty()
+uploaded_file = st.file_uploader("Choose ASCE Hazard Report", type=accepted_ftype)
 
-with placeholder:
-    uploaded_files = st.file_uploader("Choose files from a folder", accept_multiple_files=True, type=accepted_ftype)
+if uploaded_file is not None:
+    file_name = uploaded_file.name
+    st.write("Uploaded File Name:", file_name)
 
-# Define a list of items to look for in each line
-items = ['PanelType', 'ParapetHeight', 'BottomPanelHeight', 'PanelHeight', 'PanelLength', 'PanelThickness', 'PanelMaterial', 'Openings', 'DataVBarsCount', 'DataVBarsVBars','DataHBarsCount', 'DataHBarsHBars']
+    # Open the PDF report and extract the text
+    reader = PdfReader(uploaded_file)
+    design_values = {
+        'Wind Speed': 0,  # mph
+        'SS': 0,
+        'S1': 0,
+        'Fa': 0,
+        'Fv': 0,
+        'SMS': 0,
+        'SM1': 0,
+        'SDS': 0,
+        'SD1': 0,
+        'TL': 0,
+        'PGA': 0,
+        'PGAM': 0,
+        'FPGA': 0,
+        'Ie': 0,
+        'Cv': 0,
+        'Seismic Design Category': 0,  # Probably need to actually calculate some of these values from the equations
+        'Ground Snow Load': 0,  # Ground snow (pg) in psf
+        '15-minute Precipitation Intensity': 0,  # 15 minute rain value
+        '60-minute Precipitation Intensity': 0  # 1 hour rain value
+    }
 
-# Initialize an empty dictionary for each item
-item_dict = {key: np.nan for key in items}
-
-# Define a blank Dataframe with the column names
-df = pd.DataFrame(columns = items)
-
-if uploaded_files:
-    # Create a temporary directory to store uploaded files
-    temp_dir = "temp_wall_files"
-    os.makedirs(temp_dir, exist_ok=True)
-    i = 0
-    for file in uploaded_files:
-        if file.name.endswith('.tup'):
-            # Set Panel type to the name of the .tup file
-            item_dict['PanelType']=file.name.replace('.tup', '')
-
-            # Read all lines in the file
-            # lines = file.read().decode('utf-8', errors='replace')
-            # # lines = file.read().decode('utf-8')
-            # st.header(f"First line = {lines[0]}")
-            # Loop through each line in the file
-            for encoded_line in file:
-                line = encoded_line.decode("utf-8", errors="replace").strip()
-                # Loop through each item in the items list
-                for item in items:
-                    # Check if the item is in the line
-                    if line.startswith(f"{item}"):
-                        try:
-                            # Extract the value from the line
-                            value = str(line.split("=")[1].strip()).replace(" ft", "").replace(" in", "")
-                            if value.startswith('C'):
-                                value = value.split("-")[0].strip().replace("C ", "")
-                            # Append the value to the dictionary with a semicolon separator
-                            if str(item_dict[item]) == 'nan':
-                                item_dict[item] = value
-                            else:
-                                item_dict[item] = str(item_dict[item]) + ';' + value
-                            break
-                        except:
-                            # If the item is not in the line, append None to the dictionary
-                            item_dict[item] = None
-
-            df1 = pd.DataFrame.from_dict([item_dict])
-            df = pd.concat([df, df1], ignore_index=True)
-            for key in item_dict:
-                item_dict[key] = np.nan
-
-    # Change Material to psi and thickness add inches
-    df['PanelMaterial'] = df['PanelMaterial'] + '000 psi'
-    df['PanelThickness'] = df['PanelThickness'] + ' inches'
-    df['Tfc'] = 'T=' + df['PanelThickness'] + '/f\'c=' + df['PanelMaterial']
+    # Open the PDF report and extract design values
+    for i in range(0, len(reader.pages)):
+        page = reader.pages[i]
+        lines = page.extract_text().split('\n')
+        for line in lines:
+            for search_string in design_values.keys():
+                if search_string in line:
+                    edits = line.replace(search_string, "")
+                    test = float(re.findall(r'\d+\.?\d*', edits)[0])
+                    design_values[search_string] = test
     
-    
-    st.success(f"Files uploaded successfully.")
-    
-    status_text = st.empty()
-    status_text.text(f"Waiting to process files: {0} of {len(df)}")
-    progress_bar = st.progress(0)
-
-    #Display the dataframe from reading the tup files for testing purposes
-    selected_columns = ['PanelType', 'PanelThickness', 'PanelMaterial']
-    st.header('Panel Schedule')
-    # Calculate the height based on the number of rows in the dataframe
-    df_height = (len(df) + 1) * 35 + 3  # Adjust the multiplier as needed for your specific case
-
-    # Display the dataframe with the calculated height
-    st.dataframe(df[selected_columns], height=df_height)
-
-    for index, row in df.iterrows():
-
-        # Plot the graph on the appropriate subplot by splitting the subfigure into Vertical and Horizontal rebar graphs
-        fig, (verts, horzs) = plt.subplots(1, 2, figsize=(16, 14))
-
-        # Use the modules to generate the graphs for verticals and horizontals
-        plot_verticals(row, verts, f_size=11)
-        plot_horizontals(row, horzs, f_size=11)
-        # Set titles
-        xp = 0
-        wp = float(row['PanelLength'])
-        yp = -float(row['BottomPanelHeight'])
-        hp = -yp + float(row['ParapetHeight']) + float(row['PanelHeight'])
-        panel_out = Rectangle((xp,yp), wp, hp, edgecolor = 'black', fill=False, lw=5)
-        # Place the legend between the title and the plot
-        legend_params = {
-            'loc': 9,
-            'bbox_to_anchor': (0.5, 1.1),
-            'ncol': 4,
-            'fancybox': True,
-            'shadow': False,
-            'fontsize':10
-        }
-        verts.legend(**legend_params)
-        horzs.legend(**legend_params)
-
-        tx = panel_out.get_x() + panel_out.get_width()
-        ty = panel_out.get_y() + panel_out.get_height()
-        fig.suptitle(f"{row['PanelType']}, {row['Tfc']}", fontsize=24)
-        verts.set_title(f"Vertical Rebar (L={tx:.3f} ft, T/wall={ty:.3f} ft)", fontsize=14)
-        horzs.set_title("Horizontal Rebar", fontsize=14)
-        # plt.tight_layout()
-        st.pyplot(fig)
-
-        # Update the progress bar and status message
-        progress = (index + 1) / len(df)
-        progress_bar.progress(progress)
-        status_text.text(f"Processing file {index+1} of {len(df)}")
-
-     # Clear the status message when done
-    status_text.empty()
-    progress_bar.empty()
-    folder_title.empty()
+    design_values

@@ -3,3 +3,4 @@ numpy==2.2.0
 pandas==2.2.3
 streamlit==1.41.0
 streamlit_file_browser==3.2.22
+PyPDF2>=2.0
