@@ -6,7 +6,7 @@ import streamlit as st
 def quadratic(a,b,c):
     x_1 = (-b + sqrt(b**2 - 4*a*c)) / (2*a)
     x_2 = (-b - sqrt(b**2 - 4*a*c)) / (2*a)
-    return locals()
+    return x_1
 
 a = st.slider("Value for a:", 1, 5, 5)
 b = st.slider("Value for b:", -10, 10, -5)
@@ -17,6 +17,3 @@ st.latex(f"{a}x^2 + {b}x + {c} = 0")
 
 latex_code, vals = quadratic(a,b,c)
 st.latex(latex_code)
-
-st.write("Vals from returned dict:")
-st.write("x_1:", vals["x_1"], "x_2:", vals["x_2"])
