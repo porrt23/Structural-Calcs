@@ -10,7 +10,7 @@ from matplotlib.patches import Rectangle
 #from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from statistics import mean
 from handcalcs.decorator import handcalc
-
+import handcalcs.render
 from PyPDF2 import PdfReader
 import re
 
@@ -60,7 +60,8 @@ folder_title = st.title("Upload ASCE Hazard Report:")
 uploaded_file = st.file_uploader("Choose ASCE Hazard Report", type=accepted_ftype)
 
 if uploaded_file is not None:
-    file_name = uploaded_file.name
-    st.write("Uploaded File Name:", file_name)
-    results = hazard_reader(uploaded_file)
-    results
+    pdf_values = hazard_reader(uploaded_file)
+    st.write(pdf_values)
+    # Render calculations using handcalcs and display with Streamlit
+    rendered_calcs = handcalcs.render(hazard_reader(uploaded_file))
+    st.markdown(rendered_calcs, unsafe_allow_html=True)
