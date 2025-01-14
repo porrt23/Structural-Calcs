@@ -2,7 +2,6 @@ from PyPDF2 import PdfReader
 import re
 import streamlit as st
 from handcalcs.decorator import handcalc
-import handcalcs.render
 
 @handcalc(jupyter_display=True)
 def hazard_reader(pdf_file):
