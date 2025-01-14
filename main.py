@@ -1,18 +1,7 @@
-#%%Import libraries
-import altair as alt
-import numpy as np
-import pandas as pd
-import streamlit as st
-import os
-import io
-import matplotlib.pyplot as plt
-from matplotlib.patches import Rectangle
-#from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from statistics import mean
-from handcalcs.decorator import handcalc
-import handcalcs.render
 from PyPDF2 import PdfReader
 import re
+import streamlit as st
+from handcalcs.decorator import handcalc
 
 @handcalc(jupyter_display=True)
 def hazard_reader(pdf_file):
@@ -51,17 +40,15 @@ def hazard_reader(pdf_file):
     #                 found_val = float(re.findall(r'\d+\.?\d*', edits)[0])
     #                 pdf_values[search_string] = found_val
 
-    return 5
+    return pdf_values
 
 #%% File uploader, that accepts only pdf files to get the ASCE Hazard report.
 accepted_ftype = ['pdf']
 folder_title = st.title("Upload ASCE Hazard Report:")
 
-uploaded_file = st.file_uploader("Choose ASCE Hazard Report", type=accepted_ftype)
-
+uploaded_file = st.file_uploader("Choose a PDF file", type=accepted_ftype)
 if uploaded_file is not None:
-    pdf_values = hazard_reader(uploaded_file)
+    pdf_values, latex_code = hazard_reader(uploaded_file)
     st.write(pdf_values)
-    # Render calculations using handcalcs and display with Streamlit
-    rendered_calcs = handcalcs.render(hazard_reader(uploaded_file))
-    st.markdown(rendered_calcs, unsafe_allow_html=True)
+    # Display the LaTeX code using Streamlit
+    st.latex(latex_code)
