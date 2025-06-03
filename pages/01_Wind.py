@@ -14,7 +14,7 @@ import streamlit as st
 @handcalc(override='latex', jupyter_display=False)
 def quadratic(a,b,c):
     x_1 = (-b + sqrt(b**2 - 4*a*c)) / (2*a)
-    x_2 = (-b - sqrt(b**2 - 4*a*c)) / (2*a)
+    x_5 = (-b - sqrt(b**2 - 4*a*c)) / (2*a)
     return locals()
 
 a = st.slider("Value for a:", 1, 5, 5)
