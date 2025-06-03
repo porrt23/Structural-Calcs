@@ -10,7 +10,7 @@ def wood_beam_moment_calculation(b, d, L, w, Fb, CD, CM, Ct, CL, CF, Ci):
     L = L * 12  # Beam span (inches)
     w = w  # Distributed load (lbf/ft)
     Fb = Fb  # Reference bending design value (psi)
-
+    st.write(f"Inputs: b={b}, d={d}, L={L}, w={w}, Fb={Fb}, CD={CD}, CM={CM}, Ct={Ct}, CL={CL}, CF={CF}, Ci={Ci}")
     ## Calculations
     # Adjusted bending design value (NDS 2018 Section 4.3.1)
     Fb_prime = Fb * CD * CM * Ct * CL * CF * Ci
