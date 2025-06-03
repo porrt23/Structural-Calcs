@@ -1,4 +1,4 @@
-from handcalcs.render import render
+from handcalcs import render
 import streamlit as st
 import math
 
