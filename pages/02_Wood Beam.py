@@ -26,7 +26,7 @@ def wood_beam_moment_calculation(b, d, L, w, Fb, CD, CM, Ct, CL, CF, Ci):
 
     # Moment capacity ratio (NDS 2018 Section 3.3.1)
     ratio = fb / Fb_prime
-    st.write(f"Inputs3: b={b}, d={d}, L={L}, w={w}, Fb={Fb}, CD={CD}, CM={CM}, Ct={Ct}, CL={CL}, CF={CF}, Ci={Ci}")
+    st.write(f"Locals= {locals()}")
     return locals()
 
 # Streamlit app
