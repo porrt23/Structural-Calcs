@@ -23,6 +23,6 @@ c = st.slider("Value for c:", -20, 0, -5)
 
 st.write("Quadratic equation in x:")
 st.latex(f"{a}x^2 + {b}x + {c} = 0")
-
 latex_code, vals = quadratic(a,b,c)
+st.write(f"Latex={latex_code}")
 st.latex(latex_code)
