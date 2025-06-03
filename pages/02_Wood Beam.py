@@ -47,6 +47,7 @@ CF = st.number_input("Size factor", value=1.0, step=0.05)
 Ci = st.number_input("Incising factor", value=1.0, step=0.05)
 
 # Perform calculations
+st.write(f"Inputs: b={b}, d={d}, L={L}, w={w}, Fb={Fb}, CD={CD}, CM={CM}, Ct={Ct}, CL={CL}, CF={CF}, Ci={Ci}")
 latex_code, results = wood_beam_moment_calculation(b, d, L, w, Fb, CD, CM, Ct, CL, CF, Ci)
 
 ## Summary
