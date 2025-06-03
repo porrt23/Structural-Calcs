@@ -39,3 +39,9 @@ class MyClass:
         b = self.b
         c = a + b
         return c
+
+
+st.title("Wind Calculation Example")
+a = st.slider("Value for a:", 1, 5, 5)
+b = st.slider("Value for b:", -10, 10, -5)
+my_instance = MyClass(a, b)
