@@ -2,7 +2,7 @@ from handcalcs.decorator import handcalc
 import streamlit as st
 import math
 
-@handcalc()
+@handcalc(jupyter_display=True)
 def wood_beam_moment_calculation(b, d, L, w, Fb, CD, CM, Ct, CL, CF, Ci):
     ## Inputs
     b = b  # Beam width (inches)
