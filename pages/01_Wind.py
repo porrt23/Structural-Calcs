@@ -35,17 +35,9 @@ class MyClass:
 
     @handcalc(override='latex', jupyter_display=False)
     def my_method(self):
-        a = self.a  + 2 # Assign instance to local variable
-        b = self.b + 3
-        c = a + b
-        return c
-    
-    @handcalc(override='latex', jupyter_display=False)
-    def my_other_method(self):
-        a = self.a  # Assign instance to local variable
+        a = self.a # Assign instance to local variable
         b = self.b
         c = a + b
-        self.my_method(a+2,b+3)
         return c
 
 
