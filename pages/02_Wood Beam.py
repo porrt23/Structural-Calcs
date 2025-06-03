@@ -1,7 +1,8 @@
-from handcalcs import render
+from handcalcs.decorator import handcalc
 import streamlit as st
 import math
 
+@handcalc()
 def wood_beam_moment_calculation(b, d, L, w, Fb, CD, CM, Ct, CL, CF, Ci):
     ## Inputs
     b = b  # Beam width (inches)
@@ -25,8 +26,7 @@ def wood_beam_moment_calculation(b, d, L, w, Fb, CD, CM, Ct, CL, CF, Ci):
 
     # Moment capacity ratio (NDS 2018 Section 3.3.1)
     ratio = fb / Fb_prime
-
-    # Return all variables for rendering
+    st.write(f"Locals=")
     return locals()
 
 # Streamlit app
@@ -48,7 +48,7 @@ Ci = st.number_input("Incising factor", value=1.0, step=0.05)
 
 # Perform calculations
 st.write(f"Inputs: b={b}, d={d}, L={L}, w={w}, Fb={Fb}, CD={CD}, CM={CM}, Ct={Ct}, CL={CL}, CF={CF}, Ci={Ci}")
-results = wood_beam_moment_calculation(b, d, L, w, Fb, CD, CM, Ct, CL, CF, Ci)
+latex_code, results = wood_beam_moment_calculation(b, d, L, w, Fb, CD, CM, Ct, CL, CF, Ci)
 
 ## Summary
 st.header("Summary")
@@ -56,8 +56,7 @@ st.write(f"Moment capacity ratio: {results['ratio']:.3f}")
 
 ## Calculations
 st.header("Calculations")
-latex_code = render(results)
-st.markdown(latex_code, unsafe_allow_html=True)
+st.latex(latex_code)
 
 # Additional results
 st.header("Additional Results")
