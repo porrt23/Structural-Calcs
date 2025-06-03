@@ -28,25 +28,36 @@ import streamlit as st
 # st.latex(latex_code)
 
 
-class MyClass:
-    def __init__(self, a, b):
-        self.a = a
-        self.b = b
+# class MyClass:
+#     def __init__(self, a, b):
+#         self.a = a
+#         self.b = b
 
-    @handcalc(override='latex', jupyter_display=False)
-    def my_method(self):
-        a = self.a # Assign instance to local variable
-        b = self.b
-        c = a + b
-        return c
+#     @handcalc(override='latex', jupyter_display=False)
+#     def my_method(self):
+#         a = self.a # Assign instance to local variable
+#         b = self.b
+#         c = a + b
+#         return c
 
 
-st.title("Wind Calculation Example")
-a = st.slider("Value for a:", 1, 5, 5)
-b = st.slider("Value for b:", -10, 10, -5)
-my_instance = MyClass(a, b)
-latex, result = my_instance.my_method()
-st.write("Result of my_method:")
-st.write(result)
-st.write("Latex representation:")
-st.latex(latex)
+# st.title("Wind Calculation Example")
+# a = st.slider("Value for a:", 1, 5, 5)
+# b = st.slider("Value for b:", -10, 10, -5)
+# my_instance = MyClass(a, b)
+# latex, result = my_instance.my_method()
+# st.write("Result of my_method:")
+# st.write(result)
+# st.write("Latex representation:")
+# st.latex(latex)
+
+import streamlit as st
+
+tab1, tab2 = st.tabs(["Inputs", "Outputs"])
+
+with tab1:
+    a = st.number_input('a')
+    b = st.number_input('b')
+
+with tab2:
+    st.write(f"Sum: {a + b}")
