@@ -35,9 +35,17 @@ class MyClass:
 
     @handcalc(override='latex', jupyter_display=False)
     def my_method(self):
+        a = self.a  + 2 # Assign instance to local variable
+        b = self.b + 3
+        c = a + b
+        return c
+    
+    @handcalc(override='latex', jupyter_display=False)
+    def my_other_method(self):
         a = self.a  # Assign instance to local variable
         b = self.b
         c = a + b
+        self.my_method(a+2,b+3)
         return c
 
 
@@ -45,7 +53,7 @@ st.title("Wind Calculation Example")
 a = st.slider("Value for a:", 1, 5, 5)
 b = st.slider("Value for b:", -10, 10, -5)
 my_instance = MyClass(a, b)
-latex, result = my_instance.my_method()
+latex, result = my_instance.my_ohter_method()
 st.write("Result of my_method:")
 st.write(result)
 st.write("Latex representation:")
