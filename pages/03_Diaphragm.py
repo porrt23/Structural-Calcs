@@ -36,7 +36,8 @@ eq_ecc = st.number_input("Seismic Eccentricity", value=0.05, step=0.05)
 
 # Create an instance of the Rigid_Diaphragm class
 diaphragm = Rigid_Diaphragm(L, H, CM_x, CM_y, dia_angle, w_ecc, eq_ecc)
-st.write(diaphragm)
+st.write(diaphragm.wind_pos)
+st.write(diaphragm.eq_pos)
 
 
 
