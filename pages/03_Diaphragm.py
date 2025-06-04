@@ -1,5 +1,6 @@
 from handcalcs.decorator import handcalc
 import streamlit as st
+import pandas as pd
 import math
 
 class Rigid_Diaphragm():
@@ -36,8 +37,11 @@ eq_ecc = st.number_input("Seismic Eccentricity", value=0.05, step=0.05)
 
 # Create an instance of the Rigid_Diaphragm class
 diaphragm = Rigid_Diaphragm(L, H, CM_x, CM_y, dia_angle, w_ecc, eq_ecc)
+df = pd.DataFrame(diaphragm.wind_pos, columns=['X', 'Y'])
+st.table(df)
 st.write(diaphragm.wind_pos)
 st.write(diaphragm.eq_pos)
+
 
 
 
