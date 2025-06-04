@@ -37,7 +37,9 @@ eq_ecc = st.number_input("Seismic Eccentricity", value=0.05, step=0.05)
 
 # Create an instance of the Rigid_Diaphragm class
 diaphragm = Rigid_Diaphragm(L, H, CM_x, CM_y, dia_angle, w_ecc, eq_ecc)
+st.header("Wind Load Positions")
 st.table(pd.DataFrame(diaphragm.wind_pos, columns=['X', 'Y']))
+st.header("Seismic Load Positions")
 st.table(pd.DataFrame(diaphragm.eq_pos, columns=['X', 'Y']))
 
 
