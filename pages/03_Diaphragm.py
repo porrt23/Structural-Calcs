@@ -27,8 +27,8 @@ class Rigid_Diaphragm():
 
 st.title("Rigid Diaphragm Analysis")
 st.header("Inputs")
-L = st.number_input("Length", value=3.5, step=0.125)
-H = st.number_input("Width", value=3.5, step=0.125)
+L = st.number_input("Length (EW, ft)", value=, step=0.125)
+H = st.number_input("Width (NS, ft)", value=3.5, step=0.125)
 CM_x = st.number_input("Center of Mass X", value=0.0, step=0.125)
 CM_y = st.number_input("Center of Mass Y", value=0.0, step=0.125)
 dia_angle = st.number_input("Diaphragm Angle", value=0.0, step=0.125)
