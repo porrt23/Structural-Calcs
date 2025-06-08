@@ -2,15 +2,16 @@ from handcalcs.decorator import handcalc
 import streamlit as st
 import pandas as pd
 import math
+import numpy as np
 
 class Rigid_Diaphragm():
-    def __init__(self, L, H, CM_x, CM_y, dia_angle=0, w_ecc = 0.15, eq_ecc = 0.05):
+    def __init__(self, L, H, CMx, CMy, walls, dia_angle=0, w_ecc = 0.15, eq_ecc = 0.05):
         self.L = L # Length of diaphragm EW dimension (ft)
         self.H = H # width of diaphragm NS dimension (ft)
         self.w_ecc = w_ecc # Wind load eccentricity percentage
         self.eq_ecc = eq_ecc # Seismic load eccentricity percentage
-        self.CM = [CM_x, CM_y] # center of mass [x,y] (ft)
-        self.dia_angle = dia_angle # Angle of diaphragm (degrees)
+        self.CM = [CMx, CMy] # center of mass [x,y] (ft)
+        self.dia_angle = dia_angle # Angle of diaphragm (degrees)     
         self.wind_pos = [self.CM, # X load applicaiton location
                          [self.CM[0], self.CM[1] + self.H * self.w_ecc], # X plus eccentricity
                          [self.CM[0], self.CM[1] - self.H * self.w_ecc], # X minus eccentricity
@@ -23,6 +24,80 @@ class Rigid_Diaphragm():
                   self.CM, # Y load application location
                     [self.CM[0] + self.L * self.eq_ecc, self.CM[1]], # Y plus eccentricity
                     [self.CM[0] - self.L * self.eq_ecc, self.CM[1]]]  # Y minus eccentricity
+        
+        self.loads = ['Wind', 'Seismic']
+        self.walls = {} # Dictionary to hold shear walls with their unit load values
+        for wall in walls:
+            if not isinstance(wall, Wood_ShearWall):
+                raise TypeError("All walls must be instances of Wood_ShearWall")
+            self.walls[wall.mark] = {load: None for load in self.loads}
+
+
+class Wood_ShearWall():
+    def __init__ (self, mark, CMx, CMy, L, wall_angle, diaphragms, wall_heights, thk = 3.5, floor_trib =  None, roof_trib = None):
+        self.mark = mark # ID/mark of the shear wall
+        self.L = L # Length of Shear Wall (ft)
+        self.CM = [CMx, CMy] # Center of mass of shear wall [x,y] (ft)
+        self.wall_angle = wall_angle # Angle of shear wall (degrees)
+        self.thk = thk # Thickness of shear wall (inches)
+        self.diaphragms = diaphragms # List of Rigid_Diaphragm objects that this shear wall is connected to
+        self.wall_heights = np.array(wall_heights) # List of wall heights (ft) for each segment of the wall, as array
+        self.floor_trib = floor_trib if floor_trib is not None else [2] * len(self.wall_heights) # Floor tributary lengths (ft)
+        self.roof_trib = roof_trib if roof_trib is not None else [2] * len(self.wall_heights) # Roof tributary lengths (ft)
+        self.cor = [0, 0] # Center of rigidity [x,y] (ft), initialized to zero
+
+        # Basic attributes that contribute to rigid diaphragm analysis per shear wall
+        # Calculations per spreadsheet
+        self.delta = 3*self.wall_heights/self.L/self.thk # Deflection of shear wall (inches)
+        self.K = 1/self.delta # Stiffness of shear wall
+        self.stiffness = {
+            "K": self.K,
+            "Kxx": self.K * np.cos(np.radians(self.wall_angle))**2, # X Direction
+            "Kyy": self.K * np.sin(np.radians(self.wall_angle))**2, # Y Direction
+            "Kxy": self.K * np.sin(np.radians(self.wall_angle)) * np.cos(np.radians(self.wall_angle)), # XY Direction
+            "xKyy": self.CM[0] * (self.K * np.sin(np.radians(self.wall_angle))**2),
+            "yKxx": self.CM[1] * (self.K * np.cos(np.radians(self.wall_angle))**2),
+            "xKxy": self.CM[0] * self.K * np.sin(np.radians(self.wall_angle)) * np.cos(np.radians(self.wall_angle)),
+            "yKxy": self.CM[1] * self.K * np.sin(np.radians(self.wall_angle)) * np.cos(np.radians(self.wall_angle))
+        }
+        @property
+        def x_bar(self):
+            """Calculate the x-bar (center of mass) for the shear wall."""
+            return self.CM[0] - self.cor[0]
+        @property
+        def y_bar(self):
+            """Calculate the y-bar (center of mass) for the shear wall."""
+            return self.CM[1] - self.cor[1]
+
+        @property
+        def bar_stiffness(self):
+            """Calculate the bar stiffness based on the wall stiffness and center of mass."""
+            return {
+                "x_Kyy": self.x_bar**2 * self.stiffness["Kyy"],
+                "y_Kxx": self.y_bar**2 * self.stiffness["Kxx"],
+                "xy_Kxy": 2 * self.x_bar * self.y_bar * self.stiffness["Kxy"]
+            }
+        
+        @property
+        def V_matrix(self):
+            """Calculate the unit shears for this shear wall."""
+            vx = 0
+            vy = 0
+            v_dir = 0
+            v_dir_abs = 0
+
+
+        self.Kxx = self.K * np.cos(np.radians(self.wall_angle))**2 # Stiffness in X direction
+        self.Kyy = self.K * np.sin(np.radians(self.wall_angle))**2 # Stiffness in Y direction
+        self.Kxy = self.K * np.sin(np.radians(self.wall_angle)) * np.cos(np.radians(self.wall_angle)) # Stiffness in XY direction
+        self.xKyy = self.CM[0] * self.Kyy # Moment of inertia in Y direction
+        self.yKxx = self.CM[1] * self.Kxx # Moment of inertia in X direction
+
+
+        # Calculations per pdf on Rigid Diaphragm Analysis
+        self.delta_pdf = (4*(self.wall_heights/self.L)**3  + (3*self.wall_heights/self.L))/self.thk # Deflection of shear wall (inches)
+        self.K_pdf = 1/self.delta_pdf # Stiffness of shear wall
+
 
 
 st.title("Rigid Diaphragm Analysis")
@@ -34,6 +109,7 @@ CM_y = st.number_input("Center of Mass Y", value=376.539, step=0.125)
 dia_angle = st.number_input("Diaphragm Angle", value=0.0, step=0.125)
 w_ecc = st.number_input("Wind Eccentricity", value=0.15, step=0.05)
 eq_ecc = st.number_input("Seismic Eccentricity", value=0.05, step=0.05)
+
 
 # Create an instance of the Rigid_Diaphragm class
 diaphragm = Rigid_Diaphragm(L, H, CM_x, CM_y, dia_angle, w_ecc, eq_ecc)
