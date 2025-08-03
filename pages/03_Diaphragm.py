@@ -44,7 +44,6 @@ class Wood_ShearWall():
         self.wall_heights = np.array(wall_heights) # List of wall heights (ft) for each segment of the wall, as array
         self.floor_trib = floor_trib if floor_trib is not None else [2] * len(self.wall_heights) # Floor tributary lengths (ft)
         self.roof_trib = roof_trib if roof_trib is not None else [2] * len(self.wall_heights) # Roof tributary lengths (ft)
-        self.cor = [0, 0] # Center of rigidity [x,y] (ft), initialized to zero
 
         # Basic attributes that contribute to rigid diaphragm analysis per shear wall
         # Calculations per spreadsheet
@@ -60,14 +59,8 @@ class Wood_ShearWall():
             "xKxy": self.CM[0] * self.K * np.sin(np.radians(self.wall_angle)) * np.cos(np.radians(self.wall_angle)),
             "yKxy": self.CM[1] * self.K * np.sin(np.radians(self.wall_angle)) * np.cos(np.radians(self.wall_angle))
         }
-        @property
-        def x_bar(self):
-            """Calculate the x-bar (center of mass) for the shear wall."""
-            return self.CM[0] - self.cor[0]
-        @property
-        def y_bar(self):
-            """Calculate the y-bar (center of mass) for the shear wall."""
-            return self.CM[1] - self.cor[1]
+        self.x_bar = 0 
+        self.y_bar = 0
 
         @property
         def bar_stiffness(self):
