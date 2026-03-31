@@ -6,7 +6,7 @@ import streamlit as st
 import pandas as pd
 import forallpeople as fp
 
-fp.environment('US')
+fp.environment('default', [top_level=False])
 
 def get_pdf_text(uploaded_file):
     reader = PdfReader(BytesIO(uploaded_file.read()))
