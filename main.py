@@ -60,7 +60,7 @@ def latex_from_dict(values):
         lines.append(rf"\text{{{k}}} &= {v} \\")
     return r"\begin{aligned}" + "\n" + "\n".join(lines) + "\n" + r"\end{aligned}"
 
-@handcalc(override="params", jupyter_display=True)
+@handcalc(override="params")
 def show_params(Wind_Speed, SS, S1, Fa, Fv, SMS, SM1, SDS, SD1, TL, PGA, PGAM, FPGA, Ie, Cv, SDC, GSL, R15, R60):
     Wind_Speed = Wind_Speed
     SS = SS
