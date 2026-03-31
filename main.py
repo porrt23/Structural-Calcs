@@ -61,7 +61,7 @@ def latex_from_dict(values):
     return r"\begin{aligned}" + "\n" + "\n".join(lines) + "\n" + r"\end{aligned}"
 
 @handcalc(override="params", jupyter_display=False)
-def show_params(Wind_Speed, SS, S1, Fa, Fv, SMS, SM1, SDS, SD1, TL, PGA, PGAM, FPGA, Ie, Cv, SDC, GSL, R15, R60):
+def show_params(Wind_Speed):
     Wind_Speed = Wind_Speed
     # SS = SS
     # S1 = S1
