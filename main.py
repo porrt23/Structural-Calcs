@@ -61,48 +61,48 @@ def latex_from_dict(values):
     return r"\begin{aligned}" + "\n" + "\n".join(lines) + "\n" + r"\end{aligned}"
 
 @handcalc(override="params", jupyter_display=False)
-def show_params(Wind_Speed):
+def show_params(Wind_Speed, SS, S1, Fa, Fv, SMS, SM1, SDS, SD1, TL, PGA, PGAM, FPGA, Ie, Cv, SDC, GSL, R15, R60):
     Wind_Speed = Wind_Speed
-    # SS = SS
-    # S1 = S1
-    # Fa = Fa
-    # Fv = Fv
-    # SMS = SMS
-    # SM1 = SM1
-    # SDS = SDS
-    # SD1 = SD1
-    # TL = TL
-    # PGA = PGA
-    # PGAM = PGAM
-    # FPGA = FPGA
-    # Ie = Ie
-    # Cv = Cv
-    # SDC = SDC
-    # GSL = GSL
-    # R15 = R15
-    # R60 = R60
+    SS = SS
+    S1 = S1
+    Fa = Fa
+    Fv = Fv
+    SMS = SMS
+    SM1 = SM1
+    SDS = SDS
+    SD1 = SD1
+    TL = TL
+    PGA = PGA
+    PGAM = PGAM
+    FPGA = FPGA
+    Ie = Ie
+    Cv = Cv
+    SDC = SDC
+    GSL = GSL
+    R15 = R15
+    R60 = R60
     return locals()
 
 values = {
-    "Wind_Speed": 107
-    # "SS": None,
-    # "S1": None,
-    # "Fa": None,
-    # "Fv": None,
-    # "SMS": None,
-    # "SM1": None,
-    # "SDS": None,
-    # "SD1": None,
-    # "TL": None,
-    # "PGA": None,
-    # "PGAM": None,
-    # "FPGA": None,
-    # "Ie": None,
-    # "Cv": None,
-    # "SDC": None,
-    # "GSL": 5,
-    # "R15": None,
-    # "R60": None,
+    "Wind_Speed": 107,
+    "SS": 5,
+    "S1": 1,
+    "Fa": 1,
+    "Fv": 1,
+    "SMS": 1,
+    "SM1": 1,
+    "SDS": 1,
+    "SD1": 1,
+    "TL": 1,
+    "PGA": 1,
+    "PGAM": 1,
+    "FPGA": 1,
+    "Ie": 1,
+    "Cv": 1,
+    "SDC": 1,
+    "GSL": 5,
+    "R15": 1,
+    "R60": 1,
 }
 
 st.title("Upload ASCE Hazard Report")
