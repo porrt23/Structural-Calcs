@@ -110,8 +110,8 @@ uploaded_file = st.file_uploader("Choose a PDF file", type=["pdf"])
 
 latex_code, vals = show_params(**values)
 st.latex(r"\begin{aligned} a &= 1 \\ b &= 2 \end{aligned}")
-st.latex(latex_code)
-st.write(vals)
+# st.latex(latex_code)
+# st.write(vals)
 st.write(latex_code)
 
 # if uploaded_file is not None:
