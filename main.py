@@ -1,7 +1,7 @@
 from io import BytesIO
 from PyPDF2 import PdfReader
 import re
-from handcalcs.decorator import handcalc
+from handcalcs.handcalcs import handcalc
 import streamlit as st
 
 def get_pdf_text(uploaded_file):
