@@ -115,14 +115,20 @@ st.title("Upload ASCE Hazard Report")
 uploaded_file = st.file_uploader("Choose a PDF file", type=["pdf"])
 
 latex_code, vals = show_params(**values)
-st.write(latex_code)
-col1, col2, col3 = st.columns(3)
-with col1:
-    st.latex(r"\text{Wind Speed} = 107")
-with col2:
-    st.latex(r"S_S = 0.183") 
-with col3:
-    st.latex(r"S_1 = 0.085")
+def wide_handcalcs(latex_code):
+    col1, col2, col3 = st.columns(3)
+    
+    # Split by semicolons (handcalcs params separator)
+    equations = re.split(r';(?=.*?&)', latex_code)
+    
+    for i, eq in enumerate(equations):
+        col = [col1, col2, col3][i % 3]
+        with col:
+            # Clean up each equation
+            eq = re.sub(r'\\mathrm\{([^}]+)\}', r'\text{\1}', eq.strip())
+            st.latex(eq)
+
+wide_handcalcs(latex_code)
 
 # if uploaded_file is not None:
 #     values = hazard_reader(uploaded_file)
