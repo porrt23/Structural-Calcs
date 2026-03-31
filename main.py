@@ -1,6 +1,7 @@
 from io import BytesIO
 from PyPDF2 import PdfReader
 import re
+from handcalcs.decorator import handcalc
 import streamlit as st
 
 def get_pdf_text(uploaded_file):
@@ -59,11 +60,27 @@ def latex_from_dict(values):
         lines.append(rf"\text{{{k}}} &= {v} \\")
     return r"\begin{aligned}" + "\n" + "\n".join(lines) + "\n" + r"\end{aligned}"
 
-from handcalcs.decorator import handcalc
-import streamlit as st
-
-@handcalc()
+@handcalc(override="params", jupyter_display=False)
 def show_params(Wind_Speed, SS, S1, Fa, Fv, SMS, SM1, SDS, SD1, TL, PGA, PGAM, FPGA, Ie, Cv, SDC, GSL, R15, R60):
+    Wind_Speed = Wind_Speed
+    SS = SS
+    S1 = S1
+    Fa = Fa
+    Fv = Fv
+    SMS = SMS
+    SM1 = SM1
+    SDS = SDS
+    SD1 = SD1
+    TL = TL
+    PGA = PGA
+    PGAM = PGAM
+    FPGA = FPGA
+    Ie = Ie
+    Cv = Cv
+    SDC = SDC
+    GSL = GSL
+    R15 = R15
+    R60 = R60
     return locals()
 
 values = {
@@ -87,8 +104,6 @@ values = {
     "R15": None,
     "R60": None,
 }
-
-
 
 st.title("Upload ASCE Hazard Report")
 uploaded_file = st.file_uploader("Choose a PDF file", type=["pdf"])
