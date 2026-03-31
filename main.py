@@ -84,7 +84,7 @@ def show_params(Wind_Speed, SS, S1, Fa, Fv, SMS, SM1, SDS, SD1, TL, PGA, PGAM, F
     return locals()
 
 values = {
-    "Wind_Speed": 107,
+    "Wind_Speed": 107
     # "SS": None,
     # "S1": None,
     # "Fa": None,
