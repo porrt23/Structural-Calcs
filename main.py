@@ -3,6 +3,8 @@ from PyPDF2 import PdfReader
 import re
 from handcalcs.decorator import handcalc
 import streamlit as st
+import pandas as pd
+import forallpeople as fp
 
 def get_pdf_text(uploaded_file):
     reader = PdfReader(BytesIO(uploaded_file.read()))
@@ -62,7 +64,7 @@ def latex_from_dict(values):
 
 @handcalc(override="params")
 def show_params(Wind_Speed, SS, S1, Fa, Fv, SMS, SM1, SDS, SD1, TL, PGA, PGAM, FPGA, Ie, Cv, SDC, GSL, R15, R60):
-    Wind_Speed = Wind_Speed
+    Wind_Speed = Wind_Speed * fp.units("mph")
     SS = SS
     S1 = S1
     Fa = Fa
@@ -104,18 +106,13 @@ values = {
     "R15": 1,
     "R60": 1,
 }
-# Full width container
-container = st.container()
-with container:
+st.set_page_config(layout="wide")
 
-    st.title("Upload ASCE Hazard Report container")
-    uploaded_file = st.file_uploader("Choose a PDF file", type=["pdf"])
+st.title("Upload ASCE Hazard Report")
+uploaded_file = st.file_uploader("Choose a PDF file", type=["pdf"])
 
-    latex_code, vals = show_params(**values)
-    st.latex(r"\begin{aligned} a &= 1 \\ b &= 2 \end{aligned}")
-    # st.latex(latex_code)
-    # st.write(vals)
-    st.write(latex_code)
+latex_code, vals = show_params(**values)
+st.write(latex_code)
 
 # if uploaded_file is not None:
 #     values = hazard_reader(uploaded_file)
