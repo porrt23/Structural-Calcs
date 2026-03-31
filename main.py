@@ -108,7 +108,8 @@ values = {
 st.title("Upload ASCE Hazard Report")
 uploaded_file = st.file_uploader("Choose a PDF file", type=["pdf"])
 
-latex_code, _ = show_params(**values)
+latex_code, vals = show_params(**values)
+st.latex(r"\begin{aligned} a &= 1 \\ b &= 2 \end{aligned}")
 st.latex(latex_code)
 
 # if uploaded_file is not None:
