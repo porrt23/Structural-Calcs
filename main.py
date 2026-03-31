@@ -126,7 +126,7 @@ def wide_handcalcs(latex_code):
         with col:
             # Clean up each equation
             eq = re.sub(r'\\mathrm\{([^}]+)\}', r'\text{\1}', eq.strip())
-            st.latex(eq)
+            st.write(eq)
 
 wide_handcalcs(latex_code)
 
