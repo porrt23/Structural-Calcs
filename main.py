@@ -2,10 +2,7 @@ from io import BytesIO
 from PyPDF2 import PdfReader
 import re
 from handcalcs.decorator import handcalc
-import handcalcs.render
 import streamlit as st
-
-handcalcs.set_option("param_columns", 5) 
 
 def get_pdf_text(uploaded_file):
     reader = PdfReader(BytesIO(uploaded_file.read()))
