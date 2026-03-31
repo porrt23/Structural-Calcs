@@ -63,24 +63,24 @@ def latex_from_dict(values):
 @handcalc(override="params", jupyter_display=False)
 def show_params(Wind_Speed, SS, S1, Fa, Fv, SMS, SM1, SDS, SD1, TL, PGA, PGAM, FPGA, Ie, Cv, SDC, GSL, R15, R60):
     Wind_Speed = Wind_Speed
-    SS = SS
-    S1 = S1
-    Fa = Fa
-    Fv = Fv
-    SMS = SMS
-    SM1 = SM1
-    SDS = SDS
-    SD1 = SD1
-    TL = TL
-    PGA = PGA
-    PGAM = PGAM
-    FPGA = FPGA
-    Ie = Ie
-    Cv = Cv
-    SDC = SDC
-    GSL = GSL
-    R15 = R15
-    R60 = R60
+    # SS = SS
+    # S1 = S1
+    # Fa = Fa
+    # Fv = Fv
+    # SMS = SMS
+    # SM1 = SM1
+    # SDS = SDS
+    # SD1 = SD1
+    # TL = TL
+    # PGA = PGA
+    # PGAM = PGAM
+    # FPGA = FPGA
+    # Ie = Ie
+    # Cv = Cv
+    # SDC = SDC
+    # GSL = GSL
+    # R15 = R15
+    # R60 = R60
     return locals()
 
 values = {
