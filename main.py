@@ -66,7 +66,7 @@ def latex_from_dict(values):
 
 @handcalc(override="params")
 def show_params(Wind_Speed, SS, S1, Fa, Fv, SMS, SM1, SDS, SD1, TL, PGA, PGAM, FPGA, Ie, Cv, SDC, GSL, R15, R60):
-    Wind_Speed = Wind_Speed * fp.N
+    Wind_Speed = Wind_Speed * fp.kips
     SS = SS
     S1 = S1
     Fa = Fa
@@ -109,7 +109,7 @@ values = {
     "R60": 1,
 }
 st.set_page_config(layout="wide")
-
+st.write(fp.environment())
 st.title("Upload ASCE Hazard Report")
 uploaded_file = st.file_uploader("Choose a PDF file", type=["pdf"])
 
