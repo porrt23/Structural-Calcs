@@ -64,7 +64,7 @@ def latex_from_dict(values):
 
 @handcalc(override="params")
 def show_params(Wind_Speed, SS, S1, Fa, Fv, SMS, SM1, SDS, SD1, TL, PGA, PGAM, FPGA, Ie, Cv, SDC, GSL, R15, R60):
-    Wind_Speed = Wind_Speed * fp.units("mph")
+    Wind_Speed = Wind_Speed * fp.N
     SS = SS
     S1 = S1
     Fa = Fa
