@@ -5,7 +5,8 @@ from handcalcs.decorator import handcalc
 import streamlit as st
 import pandas as pd
 import forallpeople as fp
-fp.default_unitsystem('US')
+
+fp.environment('US')
 
 def get_pdf_text(uploaded_file):
     reader = PdfReader(BytesIO(uploaded_file.read()))
