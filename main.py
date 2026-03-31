@@ -104,16 +104,18 @@ values = {
     "R15": 1,
     "R60": 1,
 }
-st.set_page_config(layout="wide")
+# Full width container
+container = st.container()
+with container:
 
-st.title("Upload ASCE Hazard Report")
-uploaded_file = st.file_uploader("Choose a PDF file", type=["pdf"])
+    st.title("Upload ASCE Hazard Report")
+    uploaded_file = st.file_uploader("Choose a PDF file", type=["pdf"])
 
-latex_code, vals = show_params(**values)
-st.latex(r"\begin{aligned} a &= 1 \\ b &= 2 \end{aligned}")
-# st.latex(latex_code)
-# st.write(vals)
-st.write(latex_code)
+    latex_code, vals = show_params(**values)
+    st.latex(r"\begin{aligned} a &= 1 \\ b &= 2 \end{aligned}")
+    # st.latex(latex_code)
+    # st.write(vals)
+    st.write(latex_code)
 
 # if uploaded_file is not None:
 #     values = hazard_reader(uploaded_file)
