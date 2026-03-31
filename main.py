@@ -3,79 +3,66 @@ from PyPDF2 import PdfReader
 import re
 import streamlit as st
 
-def get_text_from_pdf(uploaded_file):
-    pdf_bytes = uploaded_file.read()
-    reader = PdfReader(BytesIO(pdf_bytes))
-    return "\n".join((page.extract_text() or "") for page in reader.pages)
+def get_pdf_text(uploaded_file):
+    reader = PdfReader(BytesIO(uploaded_file.read()))
+    return "\n".join(page.extract_text() or "" for page in reader.pages)
 
-def extract_value(text, pattern, default=None, cast=float):
+def find(text, pattern, cast=float, default=None):
     m = re.search(pattern, text, flags=re.I | re.S)
     if not m:
         return default
-    value = m.group(1)
+    v = m.group(1).strip()
     if cast is None:
-        return value
+        return v
     try:
-        return cast(value)
-    except Exception:
+        return cast(v)
+    except:
         return default
 
 def hazard_reader(uploaded_file):
-    text = get_text_from_pdf(uploaded_file)
+    text = get_pdf_text(uploaded_file)
 
-    values = {
-        "Wind Speed": extract_value(text, r"Wind Speed\s+(\d+(?:\.\d+)?)"),
-        "SS": extract_value(text, r"\bSS\s+(\d+(?:\.\d+)?)"),
-        "S1": extract_value(text, r"\bS1\s+(\d+(?:\.\d+)?)"),
-        "Fa": extract_value(text, r"\bFa\s+(\d+(?:\.\d+)?)"),
-        "Fv": extract_value(text, r"\bFv\s+(\d+(?:\.\d+)?)"),
-        "SMS": extract_value(text, r"\bSMS\s+(\d+(?:\.\d+)?)"),
-        "SM1": extract_value(text, r"\bSM1\s+(\d+(?:\.\d+)?)"),
-        "SDS": extract_value(text, r"\bSDS\s+(\d+(?:\.\d+)?)"),
-        "SD1": extract_value(text, r"\bSD1\s+(\d+(?:\.\d+)?)"),
-        "TL": extract_value(text, r"\bTL\s+(\d+(?:\.\d+)?)"),
-        "PGA": extract_value(text, r"\bPGA\s+(\d+(?:\.\d+)?)"),
-        "PGAM": extract_value(text, r"\bPGA M\s+(\d+(?:\.\d+)?)"),
-        "FPGA": extract_value(text, r"\bFPGA\s+(\d+(?:\.\d+)?)"),
-        "Ie": extract_value(text, r"\bIe\s+(\d+(?:\.\d+)?)"),
-        "Cv": extract_value(text, r"\bCv\s+(\d+(?:\.\d+)?)"),
-        "Seismic Design Category": extract_value(text, r"Seismic Design Category\s+([A-F])", cast=None),
-        "Ground Snow Load": extract_value(text, r"Ground Snow Load.*?(\d+(?:\.\d+)?)\s+lb", cast=float),
-        "15-minute Precipitation Intensity": extract_value(text, r"15-minute Precipitation Intensity\s+(\d+(?:\.\d+)?)"),
-        "60-minute Precipitation Intensity": extract_value(text, r"60-minute Precipitation Intensity\s+(\d+(?:\.\d+)?)"),
+    patterns = {
+        "Wind Speed": (r"Wind Speed\s+(\d+(?:\.\d+)?)", float),
+        "SS": (r"\bSS\s+(\d+(?:\.\d+)?)", float),
+        "S1": (r"\bS1\s+(\d+(?:\.\d+)?)", float),
+        "Fa": (r"\bFa\s+(\d+(?:\.\d+)?)", float),
+        "Fv": (r"\bFv\s+(\d+(?:\.\d+)?)", float),
+        "SMS": (r"\bSMS\s+(\d+(?:\.\d+)?)", float),
+        "SM1": (r"\bSM1\s+(\d+(?:\.\d+)?)", float),
+        "SDS": (r"\bSDS\s+(\d+(?:\.\d+)?)", float),
+        "SD1": (r"\bSD1\s+(\d+(?:\.\d+)?)", float),
+        "TL": (r"\bTL\s+(\d+(?:\.\d+)?)", float),
+        "PGA": (r"\bPGA\s+(\d+(?:\.\d+)?)", float),
+        "PGAM": (r"\bPGA M\s+(\d+(?:\.\d+)?)", float),
+        "FPGA": (r"\bFPGA\s+(\d+(?:\.\d+)?)", float),
+        "Ie": (r"\bIe\s+(\d+(?:\.\d+)?)", float),
+        "Cv": (r"\bCv\s+(\d+(?:\.\d+)?)", float),
+        "Seismic Design Category": (r"Seismic Design Category\s+([A-F])", None),
+        "Ground Snow Load": (r"Ground Snow Load.*?(\d+(?:\.\d+)?)\s+lb", float),
+        "15-minute Precipitation Intensity": (r"15-minute Precipitation Intensity\s+(\d+(?:\.\d+)?)", float),
+        "60-minute Precipitation Intensity": (r"60-minute Precipitation Intensity\s+(\d+(?:\.\d+)?)", float),
     }
+
+    values = {}
+    for key, (pattern, cast) in patterns.items():
+        values[key] = find(text, pattern, cast=cast)
 
     return values
 
-def build_latex(values):
-    return rf"""
-\begin{{aligned}}
-\text{{Wind Speed}} &= {values["Wind Speed"]} \ \text{{mph}} \\
-S_S &= {values["SS"]} \\
-S_1 &= {values["S1"]} \\
-F_a &= {values["Fa"]} \\
-F_v &= {values["Fv"]} \\
-S_{{MS}} &= {values["SMS"]} \\
-S_{{M1}} &= {values["SM1"]} \\
-S_{{DS}} &= {values["SDS"]} \\
-S_{{D1}} &= {values["SD1"]} \\
-T_L &= {values["TL"]} \\
-PGA &= {values["PGA"]} \\
-PGA_m &= {values["PGAM"]} \\
-F_PGA &= {values["FPGA"]} \\
-I_e &= {values["Ie"]} \\
-C_v &= {values["Cv"]} \\
-\text{{Seismic Design Category}} &= {values["Seismic Design Category"]} \\
-\text{{Ground Snow Load}} &= {values["Ground Snow Load"]} \ \text{{psf}} \\
-\text{{15-min Rain}} &= {values["15-minute Precipitation Intensity"]} \ \text{{in.}} \\
-\text{{60-min Rain}} &= {values["60-minute Precipitation Intensity"]} \ \text{{in.}}
-\end{{aligned}}
-"""
+def latex_from_dict(values):
+    lines = []
+    for k, v in values.items():
+        v = "NULL" if v is None else v
+        if isinstance(v, str):
+            v = v.replace("_", r"\_")
+        lines.append(rf"\text{{{k}}} &= {v} \\")
+    return r"\begin{aligned}" + "\n" + "\n".join(lines) + "\n" + r"\end{aligned}"
 
 st.title("Upload ASCE Hazard Report")
 uploaded_file = st.file_uploader("Choose a PDF file", type=["pdf"])
 
 if uploaded_file is not None:
-    pdf_values = hazard_reader(uploaded_file)
-    st.write(pdf_values)
-    st.latex(build_latex(pdf_values))
+    values = hazard_reader(uploaded_file)
+    st.write(values)
+    st.latex(latex_from_dict(values))
