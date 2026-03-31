@@ -104,6 +104,7 @@ values = {
     "R15": 1,
     "R60": 1,
 }
+st.set_page_config(layout="wide")
 
 st.title("Upload ASCE Hazard Report")
 uploaded_file = st.file_uploader("Choose a PDF file", type=["pdf"])
