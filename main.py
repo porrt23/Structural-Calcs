@@ -109,7 +109,8 @@ values = {
     "R60": 1,
 }
 st.set_page_config(layout="wide")
-st.write(fp.environment())
+test = fp.environment()
+st.write(test)
 st.title("Upload ASCE Hazard Report")
 uploaded_file = st.file_uploader("Choose a PDF file", type=["pdf"])
 
