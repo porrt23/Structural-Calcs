@@ -437,7 +437,7 @@ def main():
             
             name = st.text_input('Name (optional)', value="")
             
-            if st.button('Add Rectangle', use_container_width=True, type='primary'):
+            if st.button('Add Rectangle', width='stretch', type='primary'):
                 polygon = GeometryOperations.add_rectangle(x, y, width, height)
                 building.add_shape(polygon, name if name else f"Rect {len(building.footprints)+1}")
                 st.success(f"Added rectangle: {width}' x {height}'")
@@ -450,7 +450,7 @@ def main():
             radius = st.number_input('Radius (ft)', value=10.0, min_value=1.0)
             segments = st.slider('Segments', 6, 48, 24)
             
-            if st.button('Add Circle', use_container_width=True, type='primary'):
+            if st.button('Add Circle', width='stretch', type='primary'):
                 polygon = GeometryOperations.add_circle(cx, cy, radius, segments)
                 building.add_shape(polygon, f"Circle {len(building.footprints)+1}")
                 st.success(f"Added circle: r={radius}'")
@@ -474,7 +474,7 @@ def main():
                 sub_w = st.number_input('Subtract - Width (ft)', value=10.0, min_value=1.0)
                 sub_h = st.number_input('Subtract - Height (ft)', value=15.0, min_value=1.0)
                 
-                if st.button('Subtract', use_container_width=True, type='primary'):
+                if st.button('Subtract', width='stretch', type='primary'):
                     subtract_poly = GeometryOperations.add_rectangle(sub_x, sub_y, sub_w, sub_h)
                     result = building.subtract_shape(base_idx, subtract_poly)
                     
@@ -492,7 +492,7 @@ def main():
             else:
                 st.info(f"Will union {len(building.footprints)} footprints")
                 
-                if st.button('Union All', use_container_width=True, type='primary'):
+                if st.button('Union All', width='stretch', type='primary'):
                     result = building.union_all()
                     if result:
                         st.success(f"United! Total area: {result.area():.1f} ft²")
@@ -509,7 +509,7 @@ def main():
             with col2:
                 add_horizontal = st.checkbox('Horizontal lines', value=True)
             
-            if st.button('Add Grid', use_container_width=True):
+            if st.button('Add Grid', width='stretch'):
                 bbox = building.get_bounding_box()
                 xmin, ymin, xmax, ymax = bbox
                 
@@ -555,7 +555,7 @@ def main():
             
             name = st.text_input('Brace Line Name', value=f"BL-{len(building.brace_lines[direction])+1}")
             
-            if st.button('Add Brace Line', use_container_width=True, type='primary'):
+            if st.button('Add Brace Line', width='stretch', type='primary'):
                 if direction == 'NS':
                     bl = {
                         'name': name,
@@ -588,12 +588,12 @@ def main():
     with col1:
         # Plan View
         fig_plan = plot_building_plan(building)
-        st.plotly_chart(fig_plan, use_container_width=True)
+        st.plotly_chart(fig_plan, width='stretch')
         
         # 3D View (optional)
         if st.checkbox("Show 3D View"):
             fig_3d = plot_3d_building(building)
-            st.plotly_chart(fig_3d, use_container_width=True)
+            st.plotly_chart(fig_3d, width='stretch')
     
     with col2:
         st.subheader("📊 Building Information")
@@ -629,7 +629,7 @@ def main():
         col_export, col_import = st.columns(2)
         
         with col_export:
-            if st.button("💾 Export JSON", use_container_width=True):
+            if st.button("💾 Export JSON", width='stretch'):
                 data = building.to_dict()
                 json_str = json.dumps(data, indent=2)
                 st.download_button(
@@ -648,7 +648,7 @@ def main():
                 st.rerun()
         
         # Clear all
-        if st.button("🗑️ Clear All", use_container_width=True, type='secondary'):
+        if st.button("🗑️ Clear All", width='stretch', type='secondary'):
             st.session_state.building = BuildingManager()
             st.rerun()
 
