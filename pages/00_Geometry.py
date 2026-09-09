@@ -236,7 +236,7 @@ def plot_building_plan(building: BuildingManager, show_grid: bool = True, show_b
             mode='lines+markers',
             name=footprint.name,
             fill='toself',
-            fillcolor=colors[i % len(colors)] + '66',  # Add transparency
+            fillcolor=colors[i % len(colors)],
             line=dict(width=3, color=colors[i % len(colors)]),
             marker=dict(size=6, color=colors[i % len(colors)]),
             hovertemplate=f'<b>{footprint.name}</b><br>' +
